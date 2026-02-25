@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Federal Expenses by Department Group</title>
+    <meta name="description"
+        content="Canada Federal Government Expenditures by Department Group and Standard Object (SOBJ) — Live data from Open Canada API">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo-area">
+                <div class="logo-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                    </svg>
+                </div>
+                <div>
+                    <h1><span class="canada-flag">&#x1F1E8;&#x1F1E6;</span> Federal Expenses by Department Group</h1>
+                    <div class="subtitle">Canada Government Expenditure — Standard Objects (SOBJ)</div>
+                </div>
+            </div>
+            <div class="header-actions">
+                <a href="https://www.youtube.com/watch?v=JFGtRKx4ypY" target="_blank" rel="noopener noreferrer"
+                    class="hobo-link" title="The Littlest Hobo">
+                    <img src="littlehobo.jpg" alt="The Littlest Hobo" class="hobo-img">
+                </a>
+                <div class="data-status loading" id="dataStatus">⏳ Loading…</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Controls Bar -->
+    <section class="controls-bar">
+        <div class="controls-content">
+            <div class="controls-row">
+
+                <!-- Main Selection -->
+                <div class="control-group">
+                    <label id="labelMainDropdown">Department Group / Organization</label>
+                    <div class="custom-dropdown" id="mainDropdown" data-type="single">
+                        <div class="dropdown-trigger" id="mainDropdownTrigger">
+                            <span class="dropdown-label">Select Department…</span>
+                            <span class="dropdown-arrow"></span>
+                        </div>
+                        <div class="dropdown-menu" id="mainDropdownMenu">
+                            <div class="dropdown-search">
+                                <input type="text" placeholder="Search…" id="mainSearch">
+                            </div>
+                            <div class="dropdown-list" id="mainList"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Compare With -->
+                <div class="control-group">
+                    <label id="labelCompareDropdown">Compare With (Multi)</label>
+                    <div class="custom-dropdown" id="compareDropdown" data-type="multi">
+                        <div class="dropdown-trigger" id="compareDropdownTrigger">
+                            <span class="dropdown-label">None selected</span>
+                            <span class="dropdown-arrow"></span>
+                        </div>
+                        <div class="dropdown-menu" id="compareDropdownMenu">
+                            <div class="dropdown-search">
+                                <input type="text" placeholder="Search…" id="compareSearch">
+                            </div>
+                            <div class="dropdown-options">
+                                <button class="quick-btn" id="compareClearBtn">Clear All</button>
+                            </div>
+                            <div class="dropdown-list" id="compareList"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slicers Row -->
+            <div class="slicer-row">
+                <div class="slicer-group">
+                    <label id="labelSlicers">Expense Type (SOBJ)</label>
+                    <div class="slicer-buttons" id="slicerArea">
+                        <!-- Populated by JS after data loads -->
+                    </div>
+                </div>
+
+                <div class="toggle-group">
+                    <label id="labelCombine">Combine Expense Types</label>
+                    <label class="switch">
+                        <input type="checkbox" id="combineToggle" checked>
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Summary Cards -->
+        <div class="summary-cards">
+            <div class="card" id="cardLatest">
+                <div class="card-label">Latest Year Expenses</div>
+                <div class="card-value" id="valLatestAmt">—</div>
+                <div class="card-sub" id="valLatestYear">—</div>
+            </div>
+            <div class="card" id="card10yr">
+                <div class="card-label">10-Year Growth</div>
+                <div class="card-value" id="val10yrGrowth">—</div>
+                <div class="card-sub">Change over 10 years</div>
+            </div>
+            <div class="card" id="cardAvgGrowth">
+                <div class="card-label">Avg Annual Growth</div>
+                <div class="card-value" id="valAvgGrowth">—</div>
+                <div class="card-sub">Compound annual rate</div>
+            </div>
+            <div class="card" id="cardShare">
+                <div class="card-label">% of Total Expenses</div>
+                <div class="card-value" id="valShare">—</div>
+                <div class="card-sub" id="valShareYear">Most recent year</div>
+            </div>
+        </div>
+
+        <!-- Chart -->
+        <div class="chart-container">
+            <div class="chart-header">
+                <h2 id="chartTitle">Total Expenses Over Time</h2>
+            </div>
+
+            <div class="chart-empty-state" id="emptyState">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M3 3v18h18" />
+                    <path d="M18 17V9" />
+                    <path d="M13 17V5" />
+                    <path d="M8 17v-3" />
+                </svg>
+                <p>Select a Department Group or Organization to view expenses.</p>
+                <div class="hint">Use the dropdowns above to explore the data.</div>
+            </div>
+
+            <div class="chart-wrapper">
+                <canvas id="mainChart"></canvas>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p id="footerText">Data Source: Open Canada API — Public Accounts of Canada | Federal Expenses by Department
+            Group</p>
+    </footer>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
