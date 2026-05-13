@@ -30,6 +30,9 @@
                 </div>
             </div>
             <div class="header-actions">
+                <button id="themeToggleBtn" class="theme-btn" title="Toggle Light/Dark Mode">
+                    <span id="themeIcon">☀️</span>
+                </button>
                 <a href="https://www.youtube.com/watch?v=JFGtRKx4ypY" target="_blank" rel="noopener noreferrer"
                     class="hobo-link" title="The Littlest Hobo">
                     <img src="littlehobo.jpg" alt="The Littlest Hobo" class="hobo-img">
@@ -131,7 +134,7 @@
         <!-- Chart -->
         <div class="chart-container">
             <div class="chart-header">
-                <h2 id="chartTitle">Total Expenses Over Time</h2>
+                <h2 id="chartTitle">Canada Federal Expenses Over Time</h2>
             </div>
 
             <div class="chart-empty-state" id="emptyState">
@@ -148,12 +151,30 @@
             <div class="chart-wrapper">
                 <canvas id="mainChart"></canvas>
             </div>
+
+            <!-- Breakdown Table -->
+            <div class="breakdown-container" id="breakdownContainer">
+                <h3 id="breakdownTitle">Top 10 Breakdown</h3>
+                <table class="breakdown-table">
+                    <thead>
+                        <tr id="breakdownHeader">
+                            <!-- JS injected -->
+                        </tr>
+                    </thead>
+                    <tbody id="breakdownBody">
+                        <!-- JS injected -->
+                    </tbody>
+                </table>
+            </div>
         </div>
     </main>
 
     <footer class="footer">
-        <p id="footerText">Data Source: Open Canada API — Public Accounts of Canada | Federal Expenses by Department
-            Group</p>
+        <p id="footerText">
+            Data Sources: 
+            <a href="https://open.canada.ca/data/en/dataset/9c4bcc95-bd73-4476-b86f-03553d489a45" target="_blank" rel="noopener noreferrer" style="color: #3b82f6; text-decoration: none;">Open Canada Dataset</a> | 
+            <a href="https://www.tpsgc-pwgsc.gc.ca/recgen/cpc-pac/2025/vol2/s1/dmac-meso-eng.html" target="_blank" rel="noopener noreferrer" style="color: #3b82f6; text-decoration: none;">Public Accounts of Canada</a>
+        </p>
     </footer>
 
     <script src="data.js"></script>
